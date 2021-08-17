@@ -7,8 +7,12 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class BaseClass {
@@ -16,7 +20,13 @@ public class BaseClass {
 
     @Parameters({"browser"})
     @BeforeMethod
-    public void beforeMethod(@Optional("chrome") String browser){
+    public void beforeMethod(@Optional("chrome") String browser) throws MalformedURLException, InterruptedException {
+
+        //WebDriverManager caps = WebDriverManager.firefoxdriver();
+
+        //DesiredCapabilities caps = DesiredCapabilities.chrome();
+        //String node = "http://localhost:8000/wd/hub";
+        //driver = new RemoteWebDriver(new URL(node), caps);
 
         switch (browser){
             case "firefox":
@@ -44,7 +54,7 @@ public class BaseClass {
         try {
             driver.quit();
         } catch (WebDriverException ex){
-            System.out.println("El browser ya estaba cerrado.");
+            System.out.println("El browser ya estaba cerrado");
         }
     }
 

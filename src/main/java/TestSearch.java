@@ -1,41 +1,29 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import PageObjects.SearchPage;
 import org.testng.Assert;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-
-import java.util.List;
-
 public class TestSearch extends BaseClass{
     @Test
     @Parameters({"searchCriteria", "expectedResult"})
     public void Validate_Search(@Optional("macbook") String searchCriteria, @Optional("3") String expectedResult){
+
+        SearchPage searchPage = new SearchPage(driver);
         int results = Integer.parseInt(expectedResult);
+        searchPage.searchByEnter(searchCriteria);
 
-        WebElement searchInput = driver.findElement(By.name("search"));
-        searchInput.sendKeys(searchCriteria, Keys.ENTER);
-
-        Assert.assertTrue(driver.getCurrentUrl().contains("search="+searchCriteria));
-
-        Assert.assertEquals(getResults(), results,
-                "Expecting " + expectedResult + " results, but got " + getResults());
+        Assert.assertTrue(searchPage.isSearchInUrl(searchCriteria));
+        Assert.assertEquals(searchPage.getSearchIntResults(), results,
+                "Expecting " + expectedResult + " results, but got " + searchPage.getSearchIntResults());
     }
-
     @Test
-    public void Test_Empty_Results(){
-        String searchCriteria = "Star Wars";
-        int expectedResult = 0;
+    @Parameters({"searchCriteria", "expectedResult"})
+    public void Test_Empty_Results(@Optional("Star Wars") String searchCriteria, @Optional("0") String expectedResult){
 
-        WebElement searchInput = driver.findElement(By.name("search"));
-        searchInput.sendKeys(searchCriteria, Keys.ENTER);
+        SearchPage searchPage = new SearchPage(driver);
+        searchPage.searchByEnter(searchCriteria);
 
-        Assert.assertEquals(getResults(), expectedResult,
-                "Expecting " + expectedResult + " results, but got " + getResults());
-    }
-
-    public int getResults(){
-        return driver.findElements(By.cssSelector(".product-thumb")).size();
+        Assert.assertEquals(searchPage.getSearchIntResults(), expectedResult,
+                "Expecting " + expectedResult + " results, but got " + searchPage.getSearchIntResults());
     }
 }
